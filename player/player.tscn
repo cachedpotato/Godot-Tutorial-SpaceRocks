@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://dx7body0u44jx"]
+
+[ext_resource type="Script" path="res://player/player.gd" id="1_2ydqj"]
+[ext_resource type="Texture2D" uid="uid://df1ncakalahor" path="res://assets/player_ship.png" id="1_soojn"]
+[ext_resource type="PackedScene" uid="uid://bsjw3ts0y41mb" path="res://bullet.tscn" id="2_s72ok"]
+[ext_resource type="AudioStream" uid="uid://2igqugifrrmn" path="res://assets/sounds/laser.ogg" id="4_atxsc"]
+[ext_resource type="PackedScene" uid="uid://ca2fq0w1r0aye" path="res://explosion.tscn" id="5_fcdqb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sk35w"]
+radius = 32.0156
+
+[node name="Player" type="RigidBody2D"]
+linear_damp = 1.0
+angular_damp = 5.0
+script = ExtResource("1_2ydqj")
+bullet_scene = ExtResource("2_s72ok")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5708
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_soojn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_sk35w")
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(40, 0)
+
+[node name="GunCooldown" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[node name="LaserSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_atxsc")
+volume_db = -8.432
+
+[node name="Explosion" parent="." instance=ExtResource("5_fcdqb")]
+visible = false
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="GunCooldown" to="." method="_on_gun_cooldown_timeout"]
